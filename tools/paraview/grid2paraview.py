@@ -2,7 +2,7 @@ from __future__ import print_function
 from __future__ import division
 #   SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
 #   http://sparta.sandia.gov
-#   Steve Plimpton, sjplimp@sandia.gov, Michael Gallis, magalli@sandia.gov,
+#   Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov,
 #   Thomas Otahal, tjotaha@sandia.gov
 #   Sandia National Laboratories
 
@@ -1031,9 +1031,9 @@ def read_grid_description_file(sif, grid_desc):
       grid_desc["slice"].append(p)
     elif s.lower()[:10] == "create_box" and len(s.split()) == 7:
       grid_desc["create_box"] = {}
-      if s.split()[1] < s.split()[2] and \
-         s.split()[3] < s.split()[4] and \
-         s.split()[5] < s.split()[6]:
+      if float(s.split()[1]) < float(s.split()[2]) and \
+         float(s.split()[3]) < float(s.split()[4]) and \
+         float(s.split()[5]) < float(s.split()[6]):
          grid_desc["create_box"]["xlo"] = float(s.split()[1])
          grid_desc["create_box"]["xhi"] = float(s.split()[2])
          grid_desc["create_box"]["ylo"] = float(s.split()[3])

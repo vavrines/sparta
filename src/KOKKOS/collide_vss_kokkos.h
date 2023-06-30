@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
    http://sparta.sandia.gov
-   Steve Plimpton, sjplimp@sandia.gov, Michael Gallis, magalli@sandia.gov
+   Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
    Copyright (2014) Sandia Corporation.  Under the terms of Contract
@@ -44,13 +44,6 @@ struct s_COLLIDE_REDUCE {
 
   KOKKOS_INLINE_FUNCTION
   void operator+=(const s_COLLIDE_REDUCE &rhs) {
-    nattempt_one += rhs.nattempt_one;
-    ncollide_one += rhs.ncollide_one;
-    nreact_one += rhs.nreact_one;
-  }
-
-  KOKKOS_INLINE_FUNCTION
-  void operator+=(const volatile s_COLLIDE_REDUCE &rhs) volatile {
     nattempt_one += rhs.nattempt_one;
     ncollide_one += rhs.ncollide_one;
     nreact_one += rhs.nreact_one;

@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
    http://sparta.sandia.gov
-   Steve Plimpton, sjplimp@sandia.gov, Michael Gallis, magalli@sandia.gov
+   Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
    Copyright (2014) Sandia Corporation.  Under the terms of Contract
@@ -76,21 +76,25 @@ SurfReactProb::SurfReactProb(SPARTA *sparta, int narg, char **arg) :
 
 SurfReactProb::~SurfReactProb()
 {
+  if (copy) return;
+
   delete random;
 
-  for (int i = 0; i < maxlist_prob; i++) {
-    for (int j = 0; j < rlist[i].nreactant; j++)
-      delete [] rlist[i].id_reactants[j];
-    for (int j = 0; j < rlist[i].nproduct; j++)
-      delete [] rlist[i].id_products[j];
-    delete [] rlist[i].id_reactants;
-    delete [] rlist[i].id_products;
-    delete [] rlist[i].reactants;
-    delete [] rlist[i].products;
-    delete [] rlist[i].coeff;
-    delete [] rlist[i].id;
+  if (rlist) {
+    for (int i = 0; i < maxlist_prob; i++) {
+      for (int j = 0; j < rlist[i].nreactant; j++)
+        delete [] rlist[i].id_reactants[j];
+      for (int j = 0; j < rlist[i].nproduct; j++)
+        delete [] rlist[i].id_products[j];
+      delete [] rlist[i].id_reactants;
+      delete [] rlist[i].id_products;
+      delete [] rlist[i].reactants;
+      delete [] rlist[i].products;
+      delete [] rlist[i].coeff;
+      delete [] rlist[i].id;
+    }
+    memory->destroy(rlist);
   }
-  memory->destroy(rlist);
 
   memory->destroy(reactions);
   memory->destroy(indices);

@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
    http://sparta.sandia.gov
-   Steve Plimpton, sjplimp@sandia.gov, Michael Gallis, magalli@sandia.gov
+   Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
    Copyright (2014) Sandia Corporation.  Under the terms of Contract
@@ -28,11 +28,10 @@ class KokkosSPARTA : protected Pointers {
   int prewrap;
   int auto_sync;
   int nthreads,ngpus;
-  int numa;
   int need_atomics;
   int gpu_aware_flag;
-  int collide_retry_flag;
-  double collide_extra;
+  int react_retry_flag;
+  double react_extra;
 
   KokkosSPARTA(class SPARTA *, int, char **);
   ~KokkosSPARTA();

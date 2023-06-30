@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
    http://sparta.sandia.gov
-   Steve Plimpton, sjplimp@sandia.gov, Michael Gallis, magalli@sandia.gov
+   Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
    Copyright (2014) Sandia Corporation.  Under the terms of Contract
@@ -63,6 +63,7 @@ void BalanceGrid::command(int narg, char **arg, int outflag)
   if (strcmp(arg[0],"none") == 0) {
     if (narg < 1) error->all(FLERR,"Illegal balance_grid command");
     bstyle = NONE;
+    iarg = 1;
 
   } else if (strcmp(arg[0],"stride") == 0) {
     if (narg < 2) error->all(FLERR,"Illegal balance_grid command");
@@ -74,7 +75,7 @@ void BalanceGrid::command(int narg, char **arg, int outflag)
     else if (strcmp(arg[1],"zxy") == 0) order = ZXY;
     else if (strcmp(arg[1],"zyx") == 0) order = ZYX;
     else error->all(FLERR,"Illegal balance_grid command");
-    iarg = 1;
+    iarg = 2;
 
   } else if (strcmp(arg[0],"clump") == 0) {
     if (narg < 2) error->all(FLERR,"Illegal balance_grid command");
@@ -102,12 +103,12 @@ void BalanceGrid::command(int narg, char **arg, int outflag)
   } else if (strcmp(arg[0],"random") == 0) {
     if (narg < 1) error->all(FLERR,"Illegal balance_grid command");
     bstyle = RANDOM;
-    iarg = 0;
+    iarg = 1;
 
   } else if (strcmp(arg[0],"proc") == 0) {
     if (narg < 1) error->all(FLERR,"Illegal balance_grid command");
     bstyle = PROC;
-    iarg = 0;
+    iarg = 1;
 
   } else if (strcmp(arg[0],"rcb") == 0) {
     if (narg < 2) error->all(FLERR,"Illegal balance_grid command");
@@ -523,8 +524,8 @@ void BalanceGrid::procs2grid(int nx, int ny, int nz,
       if (upy && ipy != upy) valid = 0;
       if ((nprocs/ipx) % ipy) valid = 0;
       if (!valid) {
-	ipy++;
-	continue;
+        ipy++;
+        continue;
       }
 
       ipz = nprocs/ipx/ipy;
@@ -532,16 +533,16 @@ void BalanceGrid::procs2grid(int nx, int ny, int nz,
       if (upz && ipz != upz) valid = 0;
       if (domain->dimension == 2 && ipz != 1) valid = 0;
       if (!valid) {
-	ipy++;
-	continue;
+        ipy++;
+        continue;
       }
 
       surf = area[0]/ipx/ipy + area[1]/ipx/ipz + area[2]/ipy/ipz;
       if (surf < bestsurf) {
-	bestsurf = surf;
-	px = ipx;
-	py = ipy;
-	pz = ipz;
+        bestsurf = surf;
+        px = ipx;
+        py = ipy;
+        pz = ipz;
       }
       ipy++;
     }
