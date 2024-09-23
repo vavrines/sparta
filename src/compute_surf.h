@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -23,6 +23,7 @@ ComputeStyle(surf,ComputeSurf)
 
 #include "compute.h"
 #include "surf.h"
+#include "surf_react.h"
 #include "hash3.h"
 
 namespace SPARTA_NS {

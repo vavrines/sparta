@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -584,8 +584,6 @@ void ComputeDtGrid::compute_per_grid()
 
   Grid::ChildCell *cells = grid->cells;
   Grid::ChildInfo *cinfo = grid->cinfo;
-  Particle::OnePart *particles = particle->particles;
-  int dimension = domain->dimension;
 
   double dx,dy,dz;
   double umag,vmag,wmag,velmag2;

@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -610,10 +610,14 @@ template < int DIM, int SURF, int REACT, int OPT > void UpdateKokkos::move()
     */
 
 #if defined SPARTA_KOKKOS_GPU
+  #if defined KOKKOS_ARCH_AMD_GFX942
+      Kokkos::parallel_reduce(Kokkos::RangePolicy<DeviceType, TagUpdateMove<DIM,SURF,REACT,OPT,-1> >(pstart,pstop),*this,reduce);
+  #else
       Kokkos::parallel_for(Kokkos::RangePolicy<DeviceType, TagUpdateMove<DIM,SURF,REACT,OPT,1> >(pstart,pstop),*this);
+  #endif
 #elif defined KOKKOS_ENABLE_SERIAL
       if constexpr(std::is_same<DeviceType,Kokkos::Serial>::value)
-        Kokkos::parallel_reduce(Kokkos::RangePolicy<DeviceType, TagUpdateMove<DIM,SURF,REACT,OPT,-1> >(pstart,pstop),*this,reduce);
+        Kokkos::parallel_for(Kokkos::RangePolicy<DeviceType, TagUpdateMove<DIM,SURF,REACT,OPT,0> >(pstart,pstop),*this);
       else {
         if (!sparta->kokkos->need_atomics)
           Kokkos::parallel_for(Kokkos::RangePolicy<DeviceType, TagUpdateMove<DIM,SURF,REACT,OPT,0> >(pstart,pstop),*this);
@@ -661,7 +665,7 @@ template < int DIM, int SURF, int REACT, int OPT > void UpdateKokkos::move()
     // END of pstart/pstop loop advecting all particles
 
     nmigrate = h_nmigrate();
-    
+
     particle->nlocal = h_nlocal();
 
     int error_flag;
@@ -954,12 +958,12 @@ void UpdateKokkos::operator()(TagUpdateMove<DIM,SURF,REACT,OPT,ATOMIC_REDUCTION>
 
           particle_i.flag = PDONE;
 
-	  if (ATOMIC_REDUCTION == 1)
-	    Kokkos::atomic_increment(&d_ncomm_one());
-	  else if (ATOMIC_REDUCTION == 0)
-	    d_ncomm_one()++;
-	  else
-	    reduce.ncomm_one++;
+          if (ATOMIC_REDUCTION == 1)
+            Kokkos::atomic_increment(&d_ncomm_one());
+          else if (ATOMIC_REDUCTION == 0)
+            d_ncomm_one()++;
+          else
+            reduce.ncomm_one++;
         }
 
         return;
@@ -1715,8 +1719,17 @@ void UpdateKokkos::operator()(TagUpdateMove<DIM,SURF,REACT,OPT,ATOMIC_REDUCTION>
           jpart->weight = particle_i.weight;
         }
 
-        Kokkos::atomic_increment(&d_nboundary_one());
-        Kokkos::atomic_decrement(&d_ntouch_one());    // decrement here since will increment below
+        if (ATOMIC_REDUCTION == 1) {
+          Kokkos::atomic_increment(&d_nboundary_one());
+          Kokkos::atomic_decrement(&d_ntouch_one());    // decrement here since will increment below
+        } else if (ATOMIC_REDUCTION == 0) {
+          d_nboundary_one()++;
+          d_ntouch_one()--;    // decrement here since will increment below
+        } else {
+          reduce.nboundary_one++;
+          reduce.ntouch_one--;    // decrement here since will increment below
+        }
+
       } else {
         if (ATOMIC_REDUCTION == 1) {
           Kokkos::atomic_increment(&d_nboundary_one());

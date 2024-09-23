@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -29,7 +29,7 @@ namespace SPARTA_NS {
 class ComputeBoundary : public Compute {
  public:
   ComputeBoundary(class SPARTA *, int, char **);
-  ComputeBoundary(class SPARTA* sparta) : Compute(sparta) {}
+  ComputeBoundary(class SPARTA* sparta) : Compute(sparta) {} // needed for Kokkos
   ~ComputeBoundary();
   virtual void init();
   virtual void compute_array();

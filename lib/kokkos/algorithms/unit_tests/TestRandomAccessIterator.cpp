@@ -46,6 +46,44 @@ TEST_F(random_access_iterator_test, constructor) {
   EXPECT_TRUE(true);
 }
 
+TEST_F(random_access_iterator_test, constructiblity) {
+  auto first_d  = KE::begin(m_dynamic_view);
+  auto cfirst_d = KE::cbegin(m_dynamic_view);
+
+  static_assert(std::is_constructible_v<decltype(cfirst_d), decltype(first_d)>);
+  static_assert(
+      !std::is_constructible_v<decltype(first_d), decltype(cfirst_d)>);
+  [[maybe_unused]] decltype(cfirst_d) tmp_cfirst_d(first_d);
+
+  auto first_s  = KE::begin(m_static_view);
+  auto cfirst_s = KE::cbegin(m_static_view);
+
+  static_assert(std::is_constructible_v<decltype(cfirst_s), decltype(first_s)>);
+  static_assert(
+      !std::is_constructible_v<decltype(first_s), decltype(cfirst_s)>);
+  [[maybe_unused]] decltype(cfirst_s) tmp_cfirst_s(first_s);
+
+  auto first_st  = KE::begin(m_strided_view);
+  auto cfirst_st = KE::cbegin(m_strided_view);
+
+  static_assert(
+      std::is_constructible_v<decltype(cfirst_st), decltype(first_st)>);
+  static_assert(
+      !std::is_constructible_v<decltype(first_st), decltype(cfirst_st)>);
+  [[maybe_unused]] decltype(cfirst_st) tmp_cfirst_st(first_st);
+
+  // [FIXME] Better to have tests for the explicit specifier with an expression.
+  // As soon as View converting constructors are re-implemented with a
+  // conditional explicit, we may add those tests.
+  static_assert(std::is_constructible_v<decltype(first_s), decltype(first_d)>);
+  static_assert(std::is_constructible_v<decltype(first_st), decltype(first_d)>);
+  static_assert(std::is_constructible_v<decltype(first_d), decltype(first_s)>);
+  static_assert(std::is_constructible_v<decltype(first_st), decltype(first_s)>);
+  static_assert(std::is_constructible_v<decltype(first_d), decltype(first_st)>);
+  static_assert(std::is_constructible_v<decltype(first_s), decltype(first_st)>);
+  EXPECT_TRUE(true);
+}
+
 template <class IteratorType, class ValueType>
 void test_random_access_it_verify(IteratorType it, ValueType gold_value) {
   using view_t = Kokkos::View<typename IteratorType::value_type>;
@@ -54,7 +92,7 @@ void test_random_access_it_verify(IteratorType it, ValueType gold_value) {
   Kokkos::parallel_for("_std_algo_copy", 1, cf);
   auto v_h =
       Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), checkView);
-  EXPECT_EQ(v_h(), gold_value);
+  ASSERT_EQ(v_h(), gold_value);
 }
 
 TEST_F(random_access_iterator_test, dereference) {
@@ -96,9 +134,9 @@ void test_random_access_it_subscript_op_verify(IteratorType it) {
 
   auto v_h =
       Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(), checkView);
-  EXPECT_EQ(v_h(0), (value_t)0);
-  EXPECT_EQ(v_h(1), (value_t)1);
-  EXPECT_EQ(v_h(2), (value_t)2);
+  ASSERT_EQ(v_h(0), (value_t)0);
+  ASSERT_EQ(v_h(1), (value_t)1);
+  ASSERT_EQ(v_h(2), (value_t)2);
 }
 
 TEST_F(random_access_iterator_test, subscript_operator) {
@@ -188,9 +226,9 @@ TEST_F(random_access_iterator_test, operatorsSet4) {
   auto it7 = KE::Impl::RandomAccessIterator<static_view_t>(m_static_view, 3);
   auto it8 = KE::Impl::RandomAccessIterator<dyn_view_t>(m_dynamic_view, 3);
   auto it9 = KE::Impl::RandomAccessIterator<strided_view_t>(m_strided_view, 3);
-  EXPECT_EQ(it1, it7);
-  EXPECT_EQ(it2, it8);
-  EXPECT_EQ(it3, it9);
+  ASSERT_EQ(it1, it7);
+  ASSERT_EQ(it2, it8);
+  ASSERT_EQ(it3, it9);
   EXPECT_GE(it1, it7);
   EXPECT_GE(it2, it8);
   EXPECT_GE(it3, it9);
@@ -205,16 +243,27 @@ TEST_F(random_access_iterator_test, assignment_operator) {
   EXPECT_NE(it1, it2);
 
   it2 = it1;
-  EXPECT_EQ(it1, it2);
+  ASSERT_EQ(it1, it2);
 }
 
 TEST_F(random_access_iterator_test, distance) {
   auto first = KE::begin(m_dynamic_view);
   auto last  = KE::end(m_dynamic_view);
 
-  EXPECT_EQ(0, KE::distance(first, first));
-  EXPECT_EQ(1, KE::distance(first, first + 1));
-  EXPECT_EQ(m_dynamic_view.extent(0), size_t(KE::distance(first, last)));
+  ASSERT_EQ(0, KE::distance(first, first));
+  ASSERT_EQ(1, KE::distance(first, first + 1));
+  ASSERT_EQ(m_dynamic_view.extent(0), size_t(KE::distance(first, last)));
+}
+
+TEST_F(random_access_iterator_test, traits_helpers) {
+  using T1_t = KE::Impl::RandomAccessIterator<static_view_t>;
+  using T2_t = KE::Impl::RandomAccessIterator<dyn_view_t>;
+  using T3_t = KE::Impl::RandomAccessIterator<strided_view_t>;
+
+  namespace KE = Kokkos::Experimental;
+  static_assert(KE::Impl::are_iterators_v<T1_t, T2_t, T3_t>);
+  static_assert(KE::Impl::are_random_access_iterators_v<T1_t, T2_t, T3_t>);
+  static_assert(!KE::Impl::are_iterators_v<int, T2_t, T3_t>);
 }
 
 }  // namespace stdalgos

@@ -20,10 +20,11 @@
 #include <Kokkos_Macros.hpp>
 #if defined(KOKKOS_ENABLE_OPENMP) && defined(KOKKOS_ENABLE_TASKDAG)
 
+#include <Kokkos_Atomic.hpp>
 #include <Kokkos_TaskScheduler_fwd.hpp>
 
 #include <impl/Kokkos_HostThreadTeam.hpp>
-#include <Kokkos_OpenMP.hpp>
+#include <OpenMP/Kokkos_OpenMP.hpp>
 
 #include <type_traits>
 #include <cassert>
@@ -72,7 +73,8 @@ class TaskQueueSpecialization<SimpleTaskScheduler<Kokkos::OpenMP, QueueType>> {
         execution_space().impl_internal_space_instance();
     const int pool_size = get_max_team_count(scheduler.get_execution_space());
 
-    instance->acquire_lock();
+    // Serialize kernels on the same execution space instance
+    std::lock_guard<std::mutex> lock(instance->m_instance_mutex);
 
     // TODO @tasking @new_feature DSH allow team sizes other than 1
     const int team_size = 1;                      // Threads per core
@@ -151,12 +153,10 @@ class TaskQueueSpecialization<SimpleTaskScheduler<Kokkos::OpenMP, QueueType>> {
       }
       self.disband_team();
     }  // end pragma omp parallel
-
-    instance->release_lock();
   }
 
   static uint32_t get_max_team_count(execution_space const& espace) {
-    return static_cast<uint32_t>(OpenMP::impl_thread_pool_size(espace));
+    return static_cast<uint32_t>(espace.impl_thread_pool_size());
   }
 
   // TODO @tasking @optimization DSH specialize this for trivially destructible
@@ -189,7 +189,8 @@ class TaskQueueSpecializationConstrained<
     using task_base_type = typename scheduler_type::task_base;
     using queue_type     = typename scheduler_type::queue_type;
 
-    if (1 == OpenMP::impl_thread_pool_size()) {
+    execution_space exec;
+    if (1 == exec.impl_thread_pool_size()) {
       task_base_type* const end = (task_base_type*)task_base_type::EndTag;
 
       HostThreadTeamData& team_data_single =
@@ -236,7 +237,8 @@ class TaskQueueSpecializationConstrained<
         execution_space().impl_internal_space_instance();
     const int pool_size = instance->thread_pool_size();
 
-    instance->acquire_lock();
+    // Serialize kernels on the same execution space instance
+    std::lock_guard<std::mutex> lock(instance->m_instance_mutex);
 
     const int team_size = 1;       // Threads per core
     instance->resize_thread_data(0 /* global reduce buffer */
@@ -248,6 +250,7 @@ class TaskQueueSpecializationConstrained<
                                  0 /* thread local buffer */
     );
     assert(pool_size % team_size == 0);
+
     auto& queue = scheduler.queue();
     queue.initialize_team_queues(pool_size / team_size);
 
@@ -286,7 +289,9 @@ class TaskQueueSpecializationConstrained<
 
               // If 0 == m_ready_count then set task = 0
 
-              if (*((volatile int*)&team_queue.m_ready_count) > 0) {
+              if (desul::atomic_load(&team_queue.m_ready_count,
+                                     desul::MemoryOrderAcquire(),
+                                     desul::MemoryScopeDevice()) > 0) {
                 task = end;
                 // Attempt to acquire a task
                 // Loop by priority and then type
@@ -339,8 +344,6 @@ class TaskQueueSpecializationConstrained<
       }
       self.disband_team();
     }  // end pragma omp parallel
-
-    instance->release_lock();
   }
 
   template <typename TaskType>

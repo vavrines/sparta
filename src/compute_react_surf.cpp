@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -282,13 +282,6 @@ void ComputeReactSurf::post_process_surf()
     maxsurf = nown;
     memory->create(array_surf,maxsurf,ntotal,"react/surf:array_surf");
   }
-
-  // zero array_surf
-
-  int i,j;
-  for (i = 0; i < nown; i++)
-    for (j = 0; j < ntotal; j++)
-      array_surf[i][j] = 0.0;
 
   // collate entire array of results
 

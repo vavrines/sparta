@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -44,7 +44,6 @@
 #define PT_MASK          0x00000400
 #define LINE_MASK        0x00000800
 #define TRI_MASK         0x00001000
-#define SURF_CUSTOM_MASK 0x00002000
 
 
 #endif

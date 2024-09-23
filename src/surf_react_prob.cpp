@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -181,6 +181,13 @@ int SurfReactProb::react(Particle::OnePart *&ip, int, double *,
 char *SurfReactProb::reactionID(int m)
 {
   return rlist[m].id;
+}
+
+/* ---------------------------------------------------------------------- */
+
+double SurfReactProb::reaction_coeff(int m)
+{
+  return rlist[m].coeff[1];
 }
 
 /* ---------------------------------------------------------------------- */
@@ -411,12 +418,19 @@ void SurfReactProb::readfile(char *fname)
     if (word[0] == 'S' || word[0] == 's') r->style = SIMPLE;
     else error->all(FLERR,"Invalid reaction style in file");
 
-    if (r->style == SIMPLE) r->ncoeff = 1;
+    if (r->style == SIMPLE) r->ncoeff = 2;
 
     for (int i = 0; i < r->ncoeff; i++) {
       word = strtok(NULL," \t\n");
-      if (!word) error->all(FLERR,"Invalid reaction coefficients in file");
-      r->coeff[i] = input->numeric(FLERR,word);
+
+      // second coeff is optional
+
+      if (!word) {
+        if (i == 0) error->all(FLERR,"Invalid reaction coefficients in file");
+        else r->coeff[i] = 0.0;
+      } else {
+        r->coeff[i] = input->numeric(FLERR,word);
+      }
     }
 
     word = strtok(NULL," \t\n");

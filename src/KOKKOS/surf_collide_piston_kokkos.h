@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -33,9 +33,6 @@ SurfCollideStyle(piston/kk,SurfCollidePistonKokkos)
 #include "surf_react_prob_kokkos.h"
 
 namespace SPARTA_NS {
-
-#define KOKKOS_MAX_SURF_REACT_PER_TYPE 2
-#define KOKKOS_MAX_TOT_SURF_REACT 4
 
 class SurfCollidePistonKokkos : public SurfCollidePiston {
  public:

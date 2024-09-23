@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -187,7 +187,7 @@ void FixAveHistoWeightKokkos::calculate_weights()
         compute->invoked_flag |= INVOKED_PER_GRID;
       }
       if (j == 0) {
-        d_weights = computeKKBase->d_vector;
+        d_weights = computeKKBase->d_vector_particle;
       } else if (compute->array_grid) {
         d_weights = Kokkos::subview(computeKKBase->d_array_grid,Kokkos::ALL(),j-1);
       }
@@ -231,7 +231,7 @@ void FixAveHistoWeightKokkos::calculate_weights()
 
     } else if (kind == PERGRID) {
       if (j == 0) {
-        d_weights = fixKKBase->d_vector;
+        d_weights = fixKKBase->d_vector_particle;
       } else if (fixKKBase->d_array_grid.data()) {
         d_weights = Kokkos::subview(fixKKBase->d_array_grid,Kokkos::ALL(),j-1);
       }

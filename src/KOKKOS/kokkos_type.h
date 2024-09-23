@@ -1,6 +1,6 @@
 /* -*- c++ -*- ----------------------------------------------------------
    SPARTA - Large-scale Atomic/Molecular Massively Parallel Simulator
-   http://sparta.sandia.gov, Sandia National Laboratories
+   http://sparta.github.io, Sandia National Laboratories
    Steve Plimpton, sjplimp@gmail.com
 
    Copyright (2003) Sandia Corporation.  Under the terms of Contract
@@ -26,6 +26,9 @@
 
 #define MAX_TYPES_STACKPARAMS 12
 #define NeighClusterSize 8
+
+#define KOKKOS_MAX_SURF_REACT_PER_TYPE 2
+#define KOKKOS_MAX_TOT_SURF_REACT 4
 
 namespace Kokkos {
   static auto NoInit = [](std::string const& label) {
@@ -486,6 +489,15 @@ typedef tdual_int_2d::t_dev_const_um t_int_2d_const_um;
 typedef tdual_int_2d::t_dev_const_randomread t_int_2d_randomread;
 
 typedef Kokkos::
+  DualView<SPARTA_NS::cellint*, DeviceType::array_layout, DeviceType>
+  tdual_cellint_1d;
+typedef tdual_cellint_1d::t_dev t_cellint_1d;
+typedef tdual_cellint_1d::t_dev_const t_cellint_1d_const;
+typedef tdual_cellint_1d::t_dev_um t_cellint_1d_um;
+typedef tdual_cellint_1d::t_dev_const_um t_cellint_1d_const_um;
+typedef tdual_cellint_1d::t_dev_const_randomread t_cellint_1d_randomread;
+
+typedef Kokkos::
   DualView<SPARTA_NS::surfint*, DeviceType::array_layout, DeviceType>
   tdual_surfint_1d;
 typedef tdual_surfint_1d::t_dev t_surfint_1d;
@@ -603,6 +615,13 @@ typedef tdual_int_2d::t_host_const t_int_2d_const;
 typedef tdual_int_2d::t_host_um t_int_2d_um;
 typedef tdual_int_2d::t_host_const_um t_int_2d_const_um;
 typedef tdual_int_2d::t_host_const_randomread t_int_2d_randomread;
+
+typedef Kokkos::DualView<SPARTA_NS::cellint*, DeviceType::array_layout, DeviceType> tdual_cellint_1d;
+typedef tdual_cellint_1d::t_host t_cellint_1d;
+typedef tdual_cellint_1d::t_host_const t_cellint_1d_const;
+typedef tdual_cellint_1d::t_host_um t_cellint_1d_um;
+typedef tdual_cellint_1d::t_host_const_um t_cellint_1d_const_um;
+typedef tdual_cellint_1d::t_host_const_randomread t_cellint_1d_randomread;
 
 typedef Kokkos::DualView<SPARTA_NS::surfint*, DeviceType::array_layout, DeviceType> tdual_surfint_1d;
 typedef tdual_surfint_1d::t_host t_surfint_1d;
@@ -728,6 +747,7 @@ struct MemsetZeroFunctor {
 };
 
 #define SPARTA_LAMBDA KOKKOS_LAMBDA
+#define SPARTA_CLASS_LAMBDA KOKKOS_CLASS_LAMBDA
 
 namespace SPARTA_NS {
 template <typename Device>

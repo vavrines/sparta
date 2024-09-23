@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -58,14 +58,14 @@ Domain::Domain(SPARTA *sparta) : Pointers(sparta)
 
   nregion = maxregion = 0;
   regions = NULL;
-  copy = copymode = 0;
+  copy = uncopy = copymode = 0;
 }
 
 /* ---------------------------------------------------------------------- */
 
 Domain::~Domain()
 {
-  if (copy || copymode) return;
+  if (!uncopy && (copy || copymode)) return;
 
   for (int i = 0; i < nregion; i++) delete regions[i];
   memory->sfree(regions);

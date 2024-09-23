@@ -45,7 +45,11 @@ if(SPARTA_ENABLE_TESTING)
       "bfield"
       "adjust_temp"
       "shock_tube"
-      "variable_timestep")
+      "variable_timestep"
+      "surf_react_heatflux"
+      "chem_rates"
+      "custom"
+      "explicit2implicit")
 
   set(SPARTA_DISABLED_TESTS
       "in.ablation.3d.reactions" # Failing
@@ -55,6 +59,10 @@ if(SPARTA_ENABLE_TESTING)
       "in.cylinder" # Long runtime
       "in.jagged.3d" # Long runtime
       "in.jagged.3d.distributed" # Long runtime
+      "in.custom.cube.read.restart" # Failing
+      "in.custom.cube.set.restart" # Failing
+      "in.custom.step.read.restart" # Failing
+      "in.custom.step.set.restart" # Failing
   )
 
   list(APPEND __DEFAULT_MPI_RANKS "1")

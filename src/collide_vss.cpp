@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -106,7 +106,6 @@ double CollideVSS::vremax_init(int igroup, int jgroup)
 {
   // parent has set mixture ptr
 
-  Particle::Species *species = particle->species;
   double *vscale = mixture->vscale;
   int *mix2group = mixture->mix2group;
   int nspecies = particle->nspecies;
@@ -281,6 +280,7 @@ int CollideVSS::perform_collision(Particle::OnePart *&ip,
     // index of new K particle = nlocal-1
     // if add_particle() performs a realloc:
     //   make copy of x,v, then repoint ip,jp to new particles data struct
+    //   unless electron
 
     if (kspecies >= 0) {
       int id = MAXSMALLINT*random->uniform();
@@ -288,11 +288,15 @@ int CollideVSS::perform_collision(Particle::OnePart *&ip,
       Particle::OnePart *particles = particle->particles;
       memcpy(x,ip->x,3*sizeof(double));
       memcpy(v,ip->v,3*sizeof(double));
+      int ielectron_flag = (ambiflag && ip->ispecies == ambispecies);
+      int jelectron_flag = (ambiflag && jp->ispecies == ambispecies);
       int reallocflag =
         particle->add_particle(id,kspecies,ip->icell,x,v,0.0,0.0);
       if (reallocflag) {
-        ip = particle->particles + (ip - particles);
-        jp = particle->particles + (jp - particles);
+        if (!ielectron_flag)
+          ip = particle->particles + (ip - particles);
+        if (!jelectron_flag)
+          jp = particle->particles + (jp - particles);
       }
 
       kp = &particle->particles[particle->nlocal-1];
@@ -427,7 +431,7 @@ void CollideVSS::EEXCHANGE_NonReactingEDisposal(Particle::OnePart *ip,
 {
 
   double State_prob,Fraction_Rot,Fraction_Vib,E_Dispose;
-  int i,rotdof,vibdof,max_level,ivib,irot;
+  int i,rotdof,vibdof,max_level,ivib;
 
   Particle::OnePart *p;
   Particle::Species *species = particle->species;
@@ -634,7 +638,7 @@ void CollideVSS::EEXCHANGE_ReactingEDisposal(Particle::OnePart *ip,
                                              Particle::OnePart *kp)
 {
   double State_prob,Fraction_Rot,Fraction_Vib;
-  int i,numspecies,rotdof,vibdof,max_level,ivib,irot;
+  int i,numspecies,rotdof,vibdof,max_level,ivib;
   double aveomega,pevib;
 
   Particle::OnePart *p;

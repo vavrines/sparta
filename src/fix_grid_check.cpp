@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -204,7 +204,7 @@ void FixGridCheck::end_of_step()
     if (cells[icell].nsurf == 0) continue;
     if (cinfo[icell].volume == 0.0) continue;
 
-    int pflag,splitcell,subcell;
+    int pflag,splitcell;
     double xcell[3];
 
     // check that particle is outside surfs

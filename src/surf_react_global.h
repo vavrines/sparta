@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -28,10 +28,11 @@ namespace SPARTA_NS {
 class SurfReactGlobal : public SurfReact {
  public:
   SurfReactGlobal(class SPARTA *, int, char **);
-  SurfReactGlobal(class SPARTA *sparta) : SurfReact(sparta) {}
+  SurfReactGlobal(class SPARTA *sparta) : SurfReact(sparta) {} // needed for Kokkos
   virtual ~SurfReactGlobal();
   int react(Particle::OnePart *&, int, double *, Particle::OnePart *&, int &);
   char *reactionID(int);
+  double reaction_coeff(int) {return 0.0;};
   int match_reactant(char *, int) {return 1;}
   int match_product(char *, int) {return 1;}
 

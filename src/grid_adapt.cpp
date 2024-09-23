@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -196,7 +196,7 @@ void Grid::coarsen_cell(cellint parentID, int plevel, double *plo, double *phi,
                         void **surf_child, char **part_child,
                         Cut2d *cut2d, Cut3d *cut3d)
 {
-  int i,j,k,m,icell,jcell,ns,ip,ipnew;
+  int i,m,icell,jcell,ip,ipnew;
 
   int dim = domain->dimension;
   int maxsurfpercell = grid->maxsurfpercell;

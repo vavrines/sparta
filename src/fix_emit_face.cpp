@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -267,7 +267,6 @@ void FixEmitFace::create_task(int icell)
 
   // loop over 6 faces of icell
 
-  int ntaskorig = ntask;
   int nmask = cells[icell].nmask;
 
   for (i = 0; i < 6; i++) {

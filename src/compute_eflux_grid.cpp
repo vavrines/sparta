@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -303,7 +303,6 @@ void ComputeEFluxGrid::post_process_grid(int index, int nsample,
                                          double *vec, int nstride)
 {
   index--;
-  int ivalue = index % nvalue;
 
   int lo = 0;
   int hi = nglocal;

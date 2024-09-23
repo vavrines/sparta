@@ -1,6 +1,6 @@
 "SPARTA WWW Site"_sws - "SPARTA Documentation"_sd - "SPARTA Commands"_sc :c
 
-:link(sws,http://sparta.sandia.gov)
+:link(sws,https://sparta.github.io)
 :link(sd,Manual.html)
 :link(sc,Section_commands.html#comm)
 
@@ -165,9 +165,12 @@ S = Surface :ul
 The style determines how many reaction coefficients are listed as C1,
 C2, etc, and how they are interpreted by SPARTA.
 
-For S = Surface style, there is a single coefficient:
+For S = Surface style, there are two coefficients. The first is
+required and the second is optional and will be set to 0.0 if not
+specified:
 
-C1 = probability that the reaction occurs (0.0 to 1.0) :ul
+C1 = probability that the reaction occurs (0.0 to 1.0)
+C2 = catalytic chemical energy of reaction (optional, positive for exothermic) :ul
 
 :line
 
@@ -177,8 +180,6 @@ particles as well as with new gas-phase particles that strike the
 surface.  Each surface element stores its "state" for the counts of
 different particle species currently adsorbed on the element, which
 alters the probablity for future reactions to take place.
-
-
 
 A detailed description of the {adsorb} style and the list of reactions
 it supports is given on a separate

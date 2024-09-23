@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -321,6 +321,12 @@ static void realloc_kokkos(TYPE &data, const char *name, Indices... ns)
 {
   data = TYPE();
   data = TYPE(Kokkos::NoInit(std::string(name)), ns...);
+}
+
+template <typename TYPE, typename... Indices>
+static void realloc_kokkos(TYPE &data, Indices... ns, const char *name)
+{
+  realloc_kokkos(data, name, ns...);
 }
 
 /* ----------------------------------------------------------------------

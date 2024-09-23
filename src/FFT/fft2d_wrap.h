@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------
    SPARTA - Stochastic PArallel Rarefied-gas Time-accurate Analyzer
-   http://sparta.sandia.gov
+   http://sparta.github.io
    Steve Plimpton, sjplimp@gmail.com, Michael Gallis, magalli@sandia.gov
    Sandia National Laboratories
 
@@ -12,11 +12,11 @@
    See the README file in the top-level SPARTA directory.
 ------------------------------------------------------------------------- */
 
-#ifndef SPA_FFT2D_WRAP_H
-#define SPA_FFT2D_WRAP_H
+#ifndef SPARTA_FFT2D_WRAP_H
+#define SPARTA_FFT2D_WRAP_H
 
-#include "pointers.h"
 #include "fft2d.h"
+#include "pointers.h"
 
 namespace SPARTA_NS {
 
